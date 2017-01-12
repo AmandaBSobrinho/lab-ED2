@@ -1,6 +1,6 @@
 /*************************************************
  *Nome: Amanda Barbosa Sobrinho     RA 151042251 *
- *Nome: Jo„o Ot·vio GonÁalves Calis RA 151044521 *
+ *Nome: Jo√£o Ot√°vio Gon√ßalves Calis RA 151044521 *
  *Compilador usado: Dev-C++ 5.11                 *
  *Simulador de banco de dados                    *
  *************************************************/
@@ -23,10 +23,51 @@ typedef struct lista{
 	struct lista *prox;
 }Lista;
 
-//usada para imprimir os hashes com a formataÁ„o adequada (com os zeros a esquerda)
+typedef struct no{
+	Aluno aluno[4];
+	struct no *filhos[5];
+	short ocupacao;
+}Arvore;
+
+Arvore *inserir(Arvore *raiz, Aluno *aluno, Aluno *novo){
+	int i, indice, encontrou=0;
+	if(!raiz){// se n√£o foi criada a √°rvore, cria e inicializa sua raiz
+		raiz = malloc(sizeof(Arvore));
+		for(i = 0; i < 4; i++){
+			raiz->aluno[i].RA = 0;
+			raiz->filhos[i] = NULL;
+		}
+		raiz->filhos[i] = NULL;
+		raiz->ocupacao = 0;
+	}
+	//verificar se raiz √© um n√≥ n√£o folha (ver se h√° algum apontamento)
+	for(i = 0; i < 4 && !encontrou; i++)
+		if(raiz->filhos[i] != NULL)
+			encontrou = 1;
+	
+	if(encontrou){// for um n√≥ n√£o folha
+		for(i = 0; i < 4; i++){//encontra a subarvore i que deve inserir o aluno
+			if(raiz->aluno[i].RA < aluno->RA)
+				break;
+		}
+		
+	}else{
+		
+	} 
+}
+
+Arvore *buscar(Arvore *raiz, Aluno *aluno){
+	
+}
+
+Arvore *excluir(Arvore *raiz, Aluno *aluno){
+	
+}
+
+//usada para imprimir os hashes com a formata√ß√£o adequada (com os zeros a esquerda)
 char *converterInteiro(int numero, int casas){
 	char *s =(char*) malloc(sizeof(char)*4), aux[4];
-	itoa(numero, aux, 2);// o terceiro par‚metro diz que o n˙mero È bin·rio
+	itoa(numero, aux, 2);// o terceiro par√¢metro diz que o n√∫mero √© bin√°rio
 	int t = strlen(aux), i;
 	for(i = 0; i < casas - t; i++)
 		s[i] = '0';
@@ -86,7 +127,7 @@ char *obterCadastroAluno(){
 	strcat(tupla,",");
 	
 	printf("Digite o nome do aluno: ");
-	scanf("%*c%[^\n]%*c", aux);//ler tudo atÈ '\n' e descarta o prÛximo caracte (com o %*c)
+	scanf("%*c%[^\n]%*c", aux);//ler tudo at√© '\n' e descarta o pr√≥ximo caracte (com o %*c)
 	strcat(tupla,aux);
 	strcat(tupla,",");
 	
@@ -110,17 +151,17 @@ Lista *inicializarDiretorio(Lista *diretorio){
 	Lista *aux, *aux2;
 	diretorio = (Lista*) malloc(sizeof(Lista));
 	diretorio->bucket = (Aluno*) malloc(sizeof(Aluno)*5); //pois o primeiro elemento guarda dados do bucket
-	diretorio->bucket[0].RA = 2; //a primeira posiÁ„o contÈm apenas a profundidade local (n„o È uma posiÁ„o aloc·vel)
+	diretorio->bucket[0].RA = 2; //a primeira posi√ß√£o cont√©m apenas a profundidade local (n√£o √© uma posi√ß√£o aloc√°vel)
 	for(i = 1; i < 5; i++)
-		diretorio->bucket[i].RA = 0;//inicializaÁ„o do bucket
+		diretorio->bucket[i].RA = 0;//inicializa√ß√£o do bucket
 	aux = diretorio;
 	
-	for(j = 0; j < 3; j++){//faz o processo anterior para os prÛximos 3 buckets
+	for(j = 0; j < 3; j++){//faz o processo anterior para os pr√≥ximos 3 buckets
 		aux2 = (Lista*) malloc(sizeof(Lista));
 		aux2->bucket = (Aluno*) malloc(sizeof(Aluno)*5);
 		aux2->bucket[0].RA = 2;
 		for(i = 1; i < 5; i++)
-			aux2->bucket[i].RA = 0;//inicializaÁ„o do bucket
+			aux2->bucket[i].RA = 0;//inicializa√ß√£o do bucket
 		aux->prox = aux2;
 		aux = aux->prox;
 	}
@@ -129,8 +170,8 @@ Lista *inicializarDiretorio(Lista *diretorio){
 	return diretorio;
 }
 
-//Procura onde deve ser inserido um novo registro no diretÛrio, 
-//retorna 1 caso consiga inserir e 0 caso n„o seja possivel inserir(um bucket n„o possa mais ser duplicado)
+//Procura onde deve ser inserido um novo registro no diret√≥rio, 
+//retorna 1 caso consiga inserir e 0 caso n√£o seja possivel inserir(um bucket n√£o possa mais ser duplicado)
 int inserirNoDiretorio(Lista *diretorio, Aluno *aluno){
 	Lista *aux = diretorio, *aux2, *aux3;
 	int local, i = 0, j, cb;
@@ -138,21 +179,21 @@ int inserirNoDiretorio(Lista *diretorio, Aluno *aluno){
 		local = aluno->RA % 4;
 	else
 		local = aluno->RA % 8;
-	while(i < local){//move aux atÈ o bucket correto
+	while(i < local){//move aux at√© o bucket correto
 		i++;
 		aux = aux->prox;
 	}
 	i = 1;
 	if (profundidade == 2) {
-		while(i < 5 && aux->bucket[i].RA != 0)//procura uma posiÁ„o vazia no bucket
+		while(i < 5 && aux->bucket[i].RA != 0)//procura uma posi√ß√£o vazia no bucket
 			i++;
-		if (i < 5) // se couber no bucket, faz a inserÁ„o
+		if (i < 5) // se couber no bucket, faz a inser√ß√£o
 			aux->bucket[i] = *aluno;
-		else { // sen„o, aumenta a profundidade local e global
-			aux3 = aux; // aux3 marca o bucket que ser· dividido
+		else { // sen√£o, aumenta a profundidade local e global
+			aux3 = aux; // aux3 marca o bucket que ser√° dividido
 			while(aux->prox)
-				aux = aux->prox; // chega atÈ o final da lista atual que corresponde ao diretÛrio
-			for(j = 0; j < 4; j++){ // duplicando o diretÛrio
+				aux = aux->prox; // chega at√© o final da lista atual que corresponde ao diret√≥rio
+			for(j = 0; j < 4; j++){ // duplicando o diret√≥rio
 				aux2 = (Lista*) malloc(sizeof(Lista));
 				aux->prox = aux2;
 				aux = aux->prox;
@@ -177,15 +218,15 @@ int inserirNoDiretorio(Lista *diretorio, Aluno *aluno){
 			//dividindo o bucket
 			aux = diretorio;
 			i = 0;
-			while(i < local+4){//move aux atÈ o bucket que acabou de ser criado pela divis„o
+			while(i < local+4){//move aux at√© o bucket que acabou de ser criado pela divis√£o
 				i++;
 				aux = aux->prox;
 			}
 			aux->bucket = (Aluno*) malloc(sizeof(Aluno)*5); // cria o bucket
 			aux->bucket[0].RA = 3; // com profundidade local 3
-			aux3->bucket[0].RA = 3; // a profundidade do bucket que acabou de ser dividido tambÈm muda
+			aux3->bucket[0].RA = 3; // a profundidade do bucket que acabou de ser dividido tamb√©m muda
 			for(i = 1; i < 5; i++)
-				aux->bucket[i].RA = 0;//inicializaÁ„o do bucket recÈm-dividido
+				aux->bucket[i].RA = 0;//inicializa√ß√£o do bucket rec√©m-dividido
 			
 			// temos que realocar as chaves que estavam no bucket que acabou de ser dividido
 			i = 1, j = 1;
@@ -201,63 +242,63 @@ int inserirNoDiretorio(Lista *diretorio, Aluno *aluno){
 			i = 0;
 			aux = diretorio;
 			local = aluno->RA % 8;
-			while(i < local){//move aux atÈ o bucket correto
+			while(i < local){//move aux at√© o bucket correto
 				i++;
 				aux = aux->prox;
 			}
 			i = 1;
-			while(i < 5 && aux->bucket[i].RA != 0)//procura uma posiÁ„o vazia no bucket
+			while(i < 5 && aux->bucket[i].RA != 0)//procura uma posi√ß√£o vazia no bucket
 				i++;
-			if (i < 5) // se couber no bucket, faz a inserÁ„o
+			if (i < 5) // se couber no bucket, faz a inser√ß√£o
 				aux->bucket[i] = *aluno;
 			else
-				return 0; //como fizemos a inserÁ„o em um bucket de profundidade 3, se n„o couber, n„o ser· feita a inserÁ„o
+				return 0; //como fizemos a inser√ß√£o em um bucket de profundidade 3, se n√£o couber, n√£o ser√° feita a inser√ß√£o
 		}
 	}
 	else { // se a profundidade global for 3
-		while(i < 5 && aux->bucket[i].RA != 0)//procura uma posiÁ„o vazia no bucket
+		while(i < 5 && aux->bucket[i].RA != 0)//procura uma posi√ß√£o vazia no bucket
 			i++;
-		if (i < 5) // se couber no bucket, faz a inserÁ„o
+		if (i < 5) // se couber no bucket, faz a inser√ß√£o
 			aux->bucket[i] = *aluno;
 		else {
-			if (aux->bucket[0].RA == 3) // se a profundidade local daquele bucket for 3, n„o d· para fazer a inserÁ„o
+			if (aux->bucket[0].RA == 3) // se a profundidade local daquele bucket for 3, n√£o d√° para fazer a inser√ß√£o
 				return 0;
-			else { // se a profundidade local daquele bucket for 2, podemos aument·-la
-				aux3 = aux; // aux3 marca o bucket que ser· dividido
+			else { // se a profundidade local daquele bucket for 2, podemos aument√°-la
+				aux3 = aux; // aux3 marca o bucket que ser√° dividido
 				
 				//dividindo o bucket
 				aux = diretorio;
 				i = 0;
 				if (local < 4) {
-					while(i < local+4){//move aux atÈ o bucket mais inferior
+					while(i < local+4){//move aux at√© o bucket mais inferior
 						i++;
 						aux = aux->prox;
 					}
-					cb = 0; // o bucket a ser dividido È o superior
+					cb = 0; // o bucket a ser dividido √© o superior
 				}
 				else {
-					while(i < local-4){//move aux atÈ o bucket mais superior
+					while(i < local-4){//move aux at√© o bucket mais superior
 						i++;
 						aux = aux->prox;
 					}
-					cb = 1; // o bucket a ser dividido È o inferior
+					cb = 1; // o bucket a ser dividido √© o inferior
 				}
 				aux->bucket = (Aluno*) malloc(sizeof(Aluno)*5); // cria o bucket
 				aux->bucket[0].RA = 3; // com profundidade local 3
-				aux3->bucket[0].RA = 3; // a profundidade do bucket que acabou de ser dividido tambÈm muda
+				aux3->bucket[0].RA = 3; // a profundidade do bucket que acabou de ser dividido tamb√©m muda
 				for(i = 1; i < 5; i++)
-					aux->bucket[i].RA = 0;//inicializaÁ„o do bucket recÈm-dividido
+					aux->bucket[i].RA = 0;//inicializa√ß√£o do bucket rec√©m-dividido
 				
 				// temos que realocar as chaves que estavam no bucket que acabou de ser dividido
 				i = 1, j = 1;
 				while(i < 5 && aux3->bucket[i].RA != 0) {
-					if (cb == 0) // se o bucket a ser dividido È o superior
+					if (cb == 0) // se o bucket a ser dividido √© o superior
 						if(aux3->bucket[i].RA % 8 > 4) {// vai para o novo bucket (e sai do antigo)
 							aux->bucket[j] = aux3->bucket[i];
 							aux3->bucket[i].RA = 0;
 							j++;
 						}
-					else // se o bucket a ser dividido È o inferior
+					else // se o bucket a ser dividido √© o inferior
 						if(aux3->bucket[i].RA % 8 < 4) {// vai para o novo bucket (e sai do antigo)
 							aux->bucket[j] = aux3->bucket[i];
 							aux3->bucket[i].RA = 0;
@@ -269,34 +310,34 @@ int inserirNoDiretorio(Lista *diretorio, Aluno *aluno){
 				// inserindo a nova chave
 				i = 0;
 				aux = diretorio;
-				while(i < local){//move aux atÈ o bucket correto
+				while(i < local){//move aux at√© o bucket correto
 					i++;
 					aux = aux->prox;
 				}
 				i = 1;
-				while(i < 5 && aux->bucket[i].RA != 0)//procura uma posiÁ„o vazia no bucket
+				while(i < 5 && aux->bucket[i].RA != 0)//procura uma posi√ß√£o vazia no bucket
 					i++;
-				if (i < 5) // se couber no bucket, faz a inserÁ„o
+				if (i < 5) // se couber no bucket, faz a inser√ß√£o
 					aux->bucket[i] = *aluno;
 				else
-					return 0; //como fizemos a inserÁ„o em um bucket de profundidade 3, se n„o couber, n„o ser· feita a inserÁ„o
+					return 0; //como fizemos a inser√ß√£o em um bucket de profundidade 3, se n√£o couber, n√£o ser√° feita a inser√ß√£o
 			}	
 		}
 	}
 	return 1;
 }
 
-// LÍ todos os arquivos presentes no disco inicialmente
+// L√™ todos os arquivos presentes no disco inicialmente
 Lista *lerArquivo(Lista *diretorio, FILE *dados){
 	char tupla[150];
 	Aluno *aux;
 	while(!feof(dados)){
-		//le uma linha inteira do arquivo (onde cada linha È um registro de um aluno)
-		fscanf(dados, "%[^\n]%*c", tupla);//ler tudo atÈ '\n' e descarta o prÛximo caracte (com o %*c)
-		if(!strstr(tupla, "*")){// se È uma linha v·lida
+		//le uma linha inteira do arquivo (onde cada linha √© um registro de um aluno)
+		fscanf(dados, "%[^\n]%*c", tupla);//ler tudo at√© '\n' e descarta o pr√≥ximo caracte (com o %*c)
+		if(!strstr(tupla, "*")){// se √© uma linha v√°lida
 			aux = tuplaParaAluno(tupla);//converte a tupla (linha) lida para o tipo Aluno
-			if(!inserirNoDiretorio(diretorio, aux))//pode ocorrer de n„o ter mais espaÁo para novas inserÁıes
-				printf("Erro ao trazer registro para a memÛria!\n");	
+			if(!inserirNoDiretorio(diretorio, aux))//pode ocorrer de n√£o ter mais espa√ßo para novas inser√ß√µes
+				printf("Erro ao trazer registro para a mem√≥ria!\n");	
 		}
 	}
 }
@@ -308,7 +349,7 @@ void imprimeDiretorio(Lista *diretorio){
 	printf("+-----------------------------------------------------------------------------------------------+\n");
 	printf("|HSH| RA | NOME                                                                 | IDADE | MEDIA |\n");
 	printf("+-----------------------------------------------------------------------------------------------+\n");
-	for(i = 0; aux; aux = aux->prox, i++){//percorre todos os elementos do diretÛrio
+	for(i = 0; aux; aux = aux->prox, i++){//percorre todos os elementos do diret√≥rio
 		if(profundidade == 2)
 			printf("| %s| Profundidade local %-71d|\n", converterInteiro(i, profundidade), aux->bucket[0].RA);
 		else
@@ -350,9 +391,9 @@ void atualizarAluno(Lista *diretorio, FILE *dados){
 	do{		
 		printf("Digite o numero do RA desejado: ");
 		scanf("%d", &RA);
-	}while(RA <= 0); // se o RA for um n˙mero menor ou igual a zero, È um valor inv·lido
+	}while(RA <= 0); // se o RA for um n√∫mero menor ou igual a zero, √© um valor inv√°lido
 	
-	while(aux && !encontrou){//percorre todos os elementos do diretÛrio
+	while(aux && !encontrou){//percorre todos os elementos do diret√≥rio
 		for(i = 1; i < 5; i++){//percorre todos os elementos do bucket
 			if (aux->bucket[i].RA == RA) {// se encontrou o RA procurado
 				encontrou = 1;
@@ -395,22 +436,13 @@ void atualizarAluno(Lista *diretorio, FILE *dados){
 				imprimirAlunos(diretorio);
 			break;
 			default:
-				printf("OpÁ„o inv·lida!\n");				
+				printf("Op√ß√£o inv√°lida!\n");				
 		}
 	}while(op != 0);
-	char *tupla = malloc (sizeof(char)*200);
-	sprintf(tupla, "%-3d,%-3d,%-70s,%-6d,%.3f", aux2->bucket[i].linha,aux2->bucket[i].RA,aux2->bucket[i].nome,aux2->bucket[i].idade,aux2->bucket[i].media);
-	rewind(dados);
-	char c = 0;
-	int cont = 0;
-	while(!feof(dados) && (cont < aux2->bucket[i].linha)){
-		c = getc(dados);
-		if(c == '\n')
-			cont ++;
-	}
-	rewind(dados);
-	fseek(dados,cont*92-1,SEEK_SET);
-	fprintf(dados, "\n%s\n", tupla);
+	char *tupla = malloc (sizeof(char)*92);
+	sprintf(tupla, "%-3d,%-3d,%-70s,%-6d,%.3f\n", aux2->bucket[i].linha,aux2->bucket[i].RA,aux2->bucket[i].nome,aux2->bucket[i].idade,aux2->bucket[i].media);
+	fseek(dados,93*(aux2->bucket[i].linha),SEEK_SET);
+	fprintf(dados, "%s", tupla);
 }
 
 void excluirAluno(Lista *diretorio, FILE *dados){
@@ -423,9 +455,9 @@ void excluirAluno(Lista *diretorio, FILE *dados){
 	do{		
 		printf("Digite o numero do RA desejado: ");
 		scanf("%d", &RA);
-	}while(RA <= 0); // se o RA for um n˙mero menor ou igual a zero, È um valor inv·lido
+	}while(RA <= 0); // se o RA for um n√∫mero menor ou igual a zero, √© um valor inv√°lido
 	
-	while(aux && !encontrou){//percorre todos os elementos do diretÛrio
+	while(aux && !encontrou){//percorre todos os elementos do diret√≥rio
 		for(i = 1; i < 5; i++){//percorre todos os elementos do bucket
 			if (aux->bucket[i].RA == RA) {// se encontrou o RA procurado
 				encontrou = 1;
@@ -433,29 +465,19 @@ void excluirAluno(Lista *diretorio, FILE *dados){
 				break;
 			}
 		}
-		if(!encontrou)//pois pode ocorrer do for ter sido interrompido, ent„o n„o podemos incrementar a variavel auxiliar
+		if(!encontrou)//pois pode ocorrer do for ter sido interrompido, ent√£o n√£o podemos incrementar a variavel auxiliar
 			aux = aux->prox;
 	}
 	if (!encontrou) {
 		printf ("\nO RA fornecido nao foi encontrado!\n");
 		return;
 	}
-	aux->bucket[i].RA = 0;
+	aux->bucket[i].RA = 0;	
+	char *tupla = malloc(sizeof(char)*92);
+	sprintf(tupla, "%-3d,*  ,%-70s,%-6d,%.3f\n", aux2->bucket[i].linha,aux2->bucket[i].nome,aux2->bucket[i].idade,aux2->bucket[i].media);
+	fseek(dados,93*(aux2->bucket[i].linha),SEEK_SET);
+	fprintf(dados, "%s", tupla);
 	printf("Aluno excluido com sucesso!");
-	
-	char *tupla = malloc(sizeof(char)*200);
-	sprintf(tupla, "%-3d,*  ,%-70s,%-6d,%.3f", aux2->bucket[i].linha,aux2->bucket[i].nome,aux2->bucket[i].idade,aux2->bucket[i].media);
-	rewind(dados);
-	char c = 0;
-	int cont = 0;
-	while(!feof(dados) && (cont < aux2->bucket[i].linha)){
-		c = getc(dados);
-		if(c == '\n')
-			cont ++;
-	}
-	rewind(dados);
-	fseek(dados,cont*92-1,SEEK_SET);
-	fprintf(dados, "\n%s\n", tupla);
 }
 
 void consultarPorRA(Lista *diretorio){
@@ -464,8 +486,8 @@ void consultarPorRA(Lista *diretorio){
 	do{		
 		printf("Digite o numero do RA a ser buscado: ");
 		scanf("%d", &RA);
-	}while(RA <= 0); // se o RA for um n˙mero menor ou igual a zero, È um valor inv·lido
-	while(aux){//percorre todos os elementos do diretÛrio
+	}while(RA <= 0); // se o RA for um n√∫mero menor ou igual a zero, √© um valor inv√°lido
+	while(aux){//percorre todos os elementos do diret√≥rio
 		for(i = 1; i < 5; i++){//percorre todos os elementos do bucket
 			if (aux->bucket[i].RA == RA) {// se encontrou o RA procurado
 				printf("+-------------------------------------------------------------------------------------------+\n");
@@ -491,7 +513,7 @@ int main(){
 	Lista *diretorio;
 	Aluno *aluno;
 	diretorio = inicializarDiretorio(diretorio);
-	char *tupla, aux[100];
+	char *tupla = malloc(sizeof(char)*92), aux[100];
 	lerArquivo(diretorio, dados);
 	long a;
 	
@@ -526,9 +548,9 @@ int main(){
 					aluno->linha = cont;
 					sprintf(tupla, "%-3d,%-3d,%-70s,%-6d,%.3f\n", aluno->linha,aluno->RA,aluno->nome,aluno->idade,aluno->media);
 					if(c == '*'){//encontrou linha marcada
-						fseek(dados,cont*92+2,SEEK_SET);
+						fseek(dados,93*cont,SEEK_SET);
 						fprintf(dados, "%s", tupla);
-					} else{
+					} else{//insere no final do arquivo
 						tupla[strlen(tupla)-1] = '\0';
 						fseek(dados,0,SEEK_END);
 						fprintf(dados, "\n%s", tupla);
@@ -555,7 +577,7 @@ int main(){
 				consultarPorRA(diretorio);
 			break;
 			default:
-				printf("OpÁ„o inv·lida!\n");				
+				printf("Op√ß√£o inv√°lida!\n");				
 		}
 	}while(op != 0);
 	
