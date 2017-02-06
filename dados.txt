@@ -1,0 +1,6 @@
+0  ,1  ,Alvaro Pompeu                                                         ,20    ,9.600
+1  ,2  ,Amanda Barbosa                                                        ,21    ,9.500
+2  ,2  ,Joao Otavio                                                           ,20    ,9.745
+3  ,8  ,Felipe Pimenta                                                        ,20    ,6.700
+4  ,12 ,Gabriel Bueno                                                         ,23    ,7.300
+5  ,16 ,Guilherme Gervaes                                                     ,19    ,5.500

@@ -24,13 +24,57 @@ typedef struct lista{
 }Lista;
 
 typedef struct no{
-	Aluno *aluno[4];
+	Aluno aluno[4];
 	struct no *filhos[5];
 	short ocupacao;
 }Arvore;
 
-Arvore *inserir(Arvore *raiz, Aluno *aluno){
-	
+Arvore *criarNo(Arvore *no){
+	int i;
+	no = malloc(sizeof(Arvore));
+	for(i = 0; i < 4; i++){
+		no->aluno[i].RA = 0;
+		no->filhos[i] = NULL;
+	}
+	no->filhos[i] = NULL;
+	no->ocupacao = 0;
+	return no;
+}
+
+Arvore *inserir(Arvore *raiz, Aluno *aluno, Arvore *nova){
+	int i, ehFolha=1;
+	if(!raiz){
+		raiz =criarNo(raiz);
+	}
+	for(i = 0; i <= 4; i++){
+		if(raiz->filhos[i] != NULL){
+			ehFolha = 0;
+		}
+	}
+	if(!ehFolha){
+		for(i = 0; i < 4; i++){
+			if(raiz->aluno[i].RA > aluno->RA)
+				break;
+		}
+		if(raiz->aluno[i-1].RA < aluno->RA){// é maior que o maior elemento do nó
+			inserir(raiz->filhos[i], aluno, nova);
+		}
+		else{//esta antes do maior
+			inserir(raiz->filhos[5], aluno, nova);
+		}
+		if(!nova)
+			return raiz;
+		else{
+			for(i = 0; raiz->aluno[i].RA !=0 && i < 4; i++);
+			if(i < 4){//tem espaço
+				
+			}else{
+				
+			}
+		}
+	}else{
+		
+	}
 }
 
 Arvore *buscar(Arvore *raiz, Aluno *aluno){
