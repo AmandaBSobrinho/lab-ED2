@@ -18,10 +18,11 @@ typedef struct aluno{
 }Aluno;
 
 typedef struct no{
-	int aluno[tamanho];//vetor com os conteúdos de cada nó
+	int linhas[tamanho];//vetor com as linhas de cada aluno no arquivo
 	struct no *filhos[tamanho+1];//vetor de ponteiros para os nós filhos
-	short ocupados;//contador de posições ocupadas no vetor aluno
+	int ocupados;//contador de posições ocupadas no vetor aluno
 	int folha;//variável lógica para descobrir se um nó é folha ou não
+	struct no *pai;
 }Arvore;
 
 /*
@@ -46,8 +47,45 @@ Aluno *converterTuplaParaAluno(char *tupla){
 }
 
 /*
- FUNÇÃO AUXILIAR (usada para inserir efetivamente os registros na árvore)
+ FUNÇÃO AUXILIAR (usada para encontrar um caminho da raiz até uma folha)
+ Deve retornar um nó folha, que é o mais apropriado para a inserção
+*/
+Arvore *encontrarFolha(Arvore **alunos, int endereco){
+	Arvore *aux = *alunos;
+	if(!aux)
+		return NULL;
+	int i;
+	while(!aux->folha){// procurando um nó ate que ele sea uma folha
+		i = 0;//se não é o contador reseta
+		while(i < aux->ocupados){//para um nó, procurar o filho para "descer" de nível
+			if(endereco >= aux->linhas[i])
+				i++;
+			else
+				break;
+		}
+		aux = aux->filhos[i];//"descendo de nível"
+	}
+	return aux;//se chegou até aqui encontrou uma folha
+}
 
+/*
+ FUNÇÃO AUXILIAR (usada para inserir um valor em um nó folha)
+*/
+Arvore *inserirEmFolha(Arvore **folha, int endereco){
+	int i, localInsercao = 0;
+	while(localInsercao < (*folha)->ocupados && (*folha)->linhas[localInsercao] < endereco)
+		localInsercao++;
+	for(i = (*folha)->ocupados; i > localInsercao; i--){
+		(*folha)->linhas[i] = (*folha)->linhas[i-1];
+		(*folha)->filhos[i] = (*folha)->filhos[i-1];
+	}
+	(*folha)->linhas[localInsercao] = endereco;
+	(*folha)->ocupados++;
+	return (*folha);
+}
+
+/*
+ FUNÇÃO AUXILIAR (usada para inserir efetivamente os registros na árvore)
 */
 void inserirArvore(Arvore **alunos, int endereco){
 	if(*alunos == NULL){//árvore vazia, devemos criá-la
@@ -58,10 +96,14 @@ void inserirArvore(Arvore **alunos, int endereco){
 			(*alunos)->filhos[i] = 0;
 		(*alunos)->ocupados = 1;
 		(*alunos)->folha = 1;
-		(*alunos)->aluno[0] = endereco;
+		(*alunos)->linhas[0] = endereco;
 		return;		
 	}
-	
+	Arvore *folha = encontrarFolha(alunos, endereco);
+	if(folha->ocupados < tamanho-1){//temos espaço para inserir nessa folha
+		folha = inserirEmFolha(alunos, endereco);
+		return;
+	}
 }
 
 
